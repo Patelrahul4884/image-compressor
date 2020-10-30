@@ -46,30 +46,41 @@ class MainView(View):
 
     def post(self, request):
         quality = 0
-        if request.FILES['myimage']:
+        try:
             myimage = request.FILES['myimage']
-            image_size = (myimage.size)/1024
-            token = request.COOKIES['csrftoken']
-            token = Token(token=token)
-            token.save()
+        except:
+            print(request.method)
+            images = Upload.objects.all()
+            with zipfile.ZipFile('images.zip', 'w', compression=zipfile.ZIP_DEFLATED) as my_zip:
+                for img in images:
+                    my_zip.write(img.image.path, basename(img.image.path))
+            zipPath = os.path.join(settings.BASE_DIR, 'images.zip')
+            print(zipPath)
+            zip_file = open(zipPath, 'rb')
+            return FileResponse(zip_file)
 
-            if image_size > 100 and image_size < 400:
-                quality = 5
-            elif image_size > 400 and image_size < 700:
-                quality = 6
-            elif image_size > 700 and image_size < 1000:
-                quality = 7
-            elif image_size > 1000 and image_size < 2000:
-                quality = 8
-            else:
-                quality = 9
-            print(image_size)
-            print(quality)
-            for i in range(1, 11):
-                img = compressImage(myimage, i*quality)
-                obj = Upload(image=img, token=token)
-                obj.save()
-            return redirect('size_reducer:all')
+        image_size = (myimage.size)/1024
+        token = request.COOKIES['csrftoken']
+        token = Token(token=token)
+        token.save()
+
+        if image_size > 100 and image_size < 400:
+            quality = 5
+        elif image_size > 400 and image_size < 700:
+            quality = 6
+        elif image_size > 700 and image_size < 1000:
+            quality = 7
+        elif image_size > 1000 and image_size < 2000:
+            quality = 8
+        else:
+            quality = 9
+        print(image_size)
+        print(quality)
+        for i in range(1, 11):
+            img = compressImage(myimage, i*quality)
+            obj = Upload(image=img, token=token)
+            obj.save()
+        return redirect('size_reducer:all')
 
 
 def ImageDelete(request):
@@ -80,15 +91,17 @@ def ImageDelete(request):
     return redirect(success_url)
 
 
-def MakeZip(request):
-    images = Upload.objects.all()
-    with zipfile.ZipFile('images.zip', 'w', compression=zipfile.ZIP_DEFLATED) as my_zip:
-        for img in images:
-            my_zip.write(img.image.path, basename(img.image.path))
-    zipPath = os.path.join(settings.BASE_DIR, 'images.zip')
-    print(zipPath)
-    zip_file = open(zipPath, 'rb')
-    return FileResponse(zip_file)
+class MakeZip(View):
+    def get(self, request):
+        print(request.method)
+        images = Upload.objects.all()
+        with zipfile.ZipFile('images.zip', 'w', compression=zipfile.ZIP_DEFLATED) as my_zip:
+            for img in images:
+                my_zip.write(img.image.path, basename(img.image.path))
+        zipPath = os.path.join(settings.BASE_DIR, 'images.zip')
+        print(zipPath)
+        zip_file = open(zipPath, 'rb')
+        return FileResponse(zip_file)
 
 
 def data_delete(request):

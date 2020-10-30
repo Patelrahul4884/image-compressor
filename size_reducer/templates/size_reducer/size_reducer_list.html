@@ -6,19 +6,47 @@
 {% block content %}
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="file-upload-wrapper">
-        <input type="file" name="myimage" accept="image/*" required>
+    <div class="d-flex justify-content-center">
+
+        <input class="inputfile" id='file' onchange="form.submit()" type="file" name="myimage" accept="image/*"
+            required>
+        <label for="file">Choose a Image..</label>
     </div>
-    <hr>
-    <button class="btn btn-primary btn-lg btn-block" type="submit">Compress</button>
 </form>
-<hr>
 <div id="loading">
     <img id="loading-image" src="http://cdn.nirmaltv.com/images/generatorphp-thumb.gif" alt="Loading..." />
 </div>
 {% if images %}
 <h3>Your compressed Images</h3>
-<table class="table mb-0">
+<!-- <div class="text-center">
+    <form action="{}" method="POST">
+        {% csrf_token %}
+        <button class="btn btn-primary btn-sm">Download All</button>
+    </form>
+</div>
+<br>
+<div class="text-center">
+    <form action="{% url 'size_reducer:delete' %}" method="POST">
+        {% csrf_token %}
+        <button class="btn btn-danger btn-sm">Remove All</button>
+    </form>
+</div> -->
+<div class="row">
+    {% for image in images %}
+    <div class="column">
+        <div class="card">
+            <a target="_blank" href="{{ image.image.url }}">
+                <img src="{{ image.image.url }}" alt="Forest" style="width:150px">
+            </a>
+            <div class="card-body">
+                <a class="btn btn-primary btn-sm" href="{{ image.image.url }}" download>Download</a>
+                <p>{{ image.image.size|filesizeformat  }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<!-- <table class="table mb-0">
     <thead>
         <tr>
             <th>Image</th>
@@ -37,21 +65,8 @@
         </tr>
         {% endfor %}
     </tbody>
-</table>
-<hr>
-<div class="text-center">
-    <form action="{% url 'size_reducer:zip' %}" method="POST">
-        {% csrf_token %}
-        <button class="btn btn-primary btn-lg btn-block">Download All</button>
-    </form>
-</div>
-<br>
-<div class="text-center">
-    <form action="{% url 'size_reducer:delete' %}" method="POST">
-        {% csrf_token %}
-        <button class="btn btn-danger btn-lg btn-block ">Remove All</button>
-    </form>
-</div>
+</table> -->
+
 
 
 
