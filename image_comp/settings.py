@@ -26,6 +26,7 @@ SECRET_KEY = '^4&txp$&k51t72gv%sf-yim@er#bdr%3gkvttglcapjzl7g_(j'
 DEBUG = True
 
 ALLOWED_HOSTS = ['13.232.42.182']
+# ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -55,7 +56,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
+FILE_UPLOAD_HANDLERS = [
+    'django.core.files.uploadhandler.MemoryFileUploadHandler',
+    'django.core.files.uploadhandler.TemporaryFileUploadHandler',
+]
 ROOT_URLCONF = 'image_comp.urls'
 
 TEMPLATES = [

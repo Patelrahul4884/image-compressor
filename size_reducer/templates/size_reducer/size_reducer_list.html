@@ -4,18 +4,20 @@
 
 
 {% block content %}
-<form method="POST" enctype="multipart/form-data">
+<form id="upload_form" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="d-flex justify-content-center">
 
-        <input class="inputfile" id='file' onchange="form.submit()" type="file" name="myimage" accept="image/*"
+        <input class="inputfile" id='file' onchange="form.submit() " type="file" name="myimage" accept="image/*"
             required>
         <label for="file"> <i class="fa fa-image"> Choose a Image..</i> </label>
     </div>
 </form>
+
 <div id="loading">
     <img id="loading-image" src="http://cdn.nirmaltv.com/images/generatorphp-thumb.gif" alt="Loading..." />
 </div>
+
 {% if images %}
 <h3>Your compressed Images</h3>
 <!-- <div class="text-center">
@@ -33,7 +35,7 @@
 </div> -->
 <div class="row">
     {% for image in images %}
-    <div class="column">
+    <div class="column mx-auto">
         <div class="card">
             <a target="_blank" href="{{ image.image.url }}">
                 <img src="{{ image.image.url }}" alt="Forest" style="width:150px">
@@ -66,8 +68,6 @@
         {% endfor %}
     </tbody>
 </table> -->
-
-
 
 
 {% endif %}

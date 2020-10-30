@@ -70,6 +70,26 @@
             outline: 1px dotted #000;
             outline: -webkit-focus-ring-color auto 5px;
         }
+
+        .progress-bar {
+            height: 35px;
+            width: 250px;
+            border: 2px solid darkblue;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 25%;
+            background: lightblue;
+            display: flex;
+            align-items: center;
+            transition: width 0.25s;
+        }
+
+        .progress-bar-text {
+            margin-left: 10px;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -117,10 +137,17 @@
                 });
             });
         </script>
+
         <script>
-            $(window).ready(function () {
+            $(document).ready(function () {
+
+                $('#upload_form').change(function () {
+                    $('#loading').show();
+                })
                 $('#loading').hide();
-            });
+                console.log('hi');
+
+            })
         </script>
 
 
