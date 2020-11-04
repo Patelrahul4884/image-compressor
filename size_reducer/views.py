@@ -50,7 +50,7 @@ def compressImage(image, quality):
             '.')[0], 'image/jpeg', sys.getsizeof(outputIoStream), None)
         return image
     else:
-        print('else')
+        imageTemproary = imageTemproary.convert('RGB')
         outputIoStream = BytesIO()
         imageTemproary.save(outputIoStream, format='JPEG', quality=quality)
         outputIoStream.seek(0)
