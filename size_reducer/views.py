@@ -28,14 +28,16 @@ def compressImage(image, quality):
         for orientation in ExifTags.TAGS.keys():
             if ExifTags.TAGS[orientation] == 'Orientation':
                 break
-        exif = dict(imageTemproary._getexif().items())
+        e = imageTemproary._getexif()
+        if e is not None:
+            exif = dict(imageTemproary._getexif().items())
 
-        if exif[orientation] == 3:
-            imageTemproary = imageTemproary.rotate(180, expand=True)
-        elif exif[orientation] == 6:
-            imageTemproary = imageTemproary.rotate(270, expand=True)
-        elif exif[orientation] == 8:
-            imageTemproary = imageTemproary.rotate(90, expand=True)
+            if exif[orientation] == 3:
+                imageTemproary = imageTemproary.rotate(180, expand=True)
+            elif exif[orientation] == 6:
+                imageTemproary = imageTemproary.rotate(270, expand=True)
+            elif exif[orientation] == 8:
+                imageTemproary = imageTemproary.rotate(90, expand=True)
     else:
         imageTemproary = imageTemproary.convert('RGB')
     outputIoStream = BytesIO()
