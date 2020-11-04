@@ -1,4 +1,5 @@
 <!doctype html>
+{% load static %}
 <html lang="en">
 
 <head>
@@ -10,6 +11,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
         integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="shortcut icon" href="{% static 'size_reducer/favicon.ico' %}">
     <title>Compress JPEG!</title>
     <style>
         body {
@@ -70,26 +72,6 @@
             outline: 1px dotted #000;
             outline: -webkit-focus-ring-color auto 5px;
         }
-
-        .progress-bar {
-            height: 35px;
-            width: 250px;
-            border: 2px solid darkblue;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            width: 25%;
-            background: lightblue;
-            display: flex;
-            align-items: center;
-            transition: width 0.25s;
-        }
-
-        .progress-bar-text {
-            margin-left: 10px;
-            font-weight: bold;
-        }
     </style>
 </head>
 
@@ -102,7 +84,7 @@
             <div class="col-lg-9 col-md-12">
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h3 style="text-align: center; background-color:cadetblue;">Compress Images</h3><br>
+                        <h3 style="text-align: center; background-color:rgb(32, 224, 224);">Compress Images</h3><br>
                         {% block content %}
                         {% endblock %}
                     </div>
@@ -122,13 +104,18 @@
             integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
             crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
         <script>
+            var tabID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID = Math.random();
+            var tabid = tabID.toString();
+            console.log(tabid);
+            document.getElementById('myField').value = tabid;
             $(document).ready(function () {
                 $(window).on('beforeunload', function () {
                     $.ajax({
-                        type: 'GET',
-                        url: "{% url 'size_reducer:data_delete' %}",
-                        dataType: 'json',
+                        // type: 'GET',
+                        url: "/data_delete/" + tabid,
+                        // dataType: 'json',
                         success: function (data) {
                             console.log('ok');
                             // document.getElementById('not-count').innerHTML = data.count;
@@ -136,20 +123,18 @@
                     })
                 });
             });
+
         </script>
 
         <script>
             $(document).ready(function () {
-
                 $('#upload_form').change(function () {
                     $('#loading').show();
                 })
                 $('#loading').hide();
-                console.log('hi');
 
             })
         </script>
-
 
 
 </body>

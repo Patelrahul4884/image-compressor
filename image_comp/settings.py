@@ -25,8 +25,8 @@ SECRET_KEY = '^4&txp$&k51t72gv%sf-yim@er#bdr%3gkvttglcapjzl7g_(j'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['13.232.42.182']
-# ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = ['13.232.42.182']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -77,6 +77,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'image_comp.wsgi.application'
 
@@ -129,6 +130,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

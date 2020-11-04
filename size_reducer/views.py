@@ -1,21 +1,18 @@
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect
 from django.views import View
 from .models import Upload, Token
 from PIL import Image
-from django.views.generic.edit import DeleteView
-from django.urls import reverse_lazy
 from django.conf import settings
 import zipfile
 from os.path import basename
 from django.http import FileResponse
-from django.forms import modelformset_factory
 from PIL import Image
 from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import sys
-from django.core.files.storage import FileSystemStorage
 import os
+
 # Create your views here.
 
 
@@ -37,30 +34,20 @@ def compressImage(image, quality):
 class MainView(View):
     def get(self, request):
         try:
-            token = request.COOKIES['csrftoken']
-            images = Upload.objects.filter(token__token=token)
+            token = request.session['tabid']
+            del request.session['tabid']
         except:
             return render(request, 'size_reducer/size_reducer_list.html')
+        images = Upload.objects.filter(token__token=token)
         ctx = {'images': images}
         return render(request, 'size_reducer/size_reducer_list.html', ctx)
 
     def post(self, request):
         quality = 0
-        try:
-            myimage = request.FILES['myimage']
-        except:
-            print(request.method)
-            images = Upload.objects.all()
-            with zipfile.ZipFile('images.zip', 'w', compression=zipfile.ZIP_DEFLATED) as my_zip:
-                for img in images:
-                    my_zip.write(img.image.path, basename(img.image.path))
-            zipPath = os.path.join(settings.BASE_DIR, 'images.zip')
-            print(zipPath)
-            zip_file = open(zipPath, 'rb')
-            return FileResponse(zip_file)
-
+        myimage = request.FILES['myimage']
         image_size = (myimage.size)/1024
-        token = request.COOKIES['csrftoken']
+        token = request.POST['tabID']
+        request.session['tabid'] = token
         token = Token(token=token)
         token.save()
 
@@ -74,21 +61,11 @@ class MainView(View):
             quality = 8
         else:
             quality = 9
-        print(image_size)
-        print(quality)
         for i in range(1, 11):
             img = compressImage(myimage, i*quality)
             obj = Upload(image=img, token=token)
             obj.save()
         return redirect('size_reducer:all')
-
-
-def ImageDelete(request):
-    success_url = 'size_reducer:all'
-    if request.method == 'POST':
-        token = request.COOKIES['csrftoken']
-        Token.objects.get(token=token).delete()
-    return redirect(success_url)
 
 
 class MakeZip(View):
@@ -104,8 +81,7 @@ class MakeZip(View):
         return FileResponse(zip_file)
 
 
-def data_delete(request):
+def data_delete(request, tabid):
     data = {'abcd': 'abcd'}
-    token = request.COOKIES['csrftoken']
-    Token.objects.get(token=token).delete()
+    Token.objects.get(token=tabid).delete()
     return JsonResponse(data)

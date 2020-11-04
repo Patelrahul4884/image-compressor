@@ -12,31 +12,19 @@
             required>
         <label for="file"> <i class="fa fa-image"> Choose a Image..</i> </label>
     </div>
+    <input type="hidden" id="myField" value="" name="tabID" />
 </form>
-
 <div id="loading">
     <img id="loading-image" src="http://cdn.nirmaltv.com/images/generatorphp-thumb.gif" alt="Loading..." />
 </div>
 
 {% if images %}
 <h3>Your compressed Images</h3>
-<!-- <div class="text-center">
-    <form action="{}" method="POST">
-        {% csrf_token %}
-        <button class="btn btn-primary btn-sm">Download All</button>
-    </form>
-</div>
-<br>
-<div class="text-center">
-    <form action="{% url 'size_reducer:delete' %}" method="POST">
-        {% csrf_token %}
-        <button class="btn btn-danger btn-sm">Remove All</button>
-    </form>
-</div> -->
+
 <div class="row">
     {% for image in images %}
     <div class="column mx-auto">
-        <div class="card">
+        <div class="card" style="height: 200px;">
             <a target="_blank" href="{{ image.image.url }}">
                 <img src="{{ image.image.url }}" alt="Forest" style="width:150px">
             </a>
@@ -48,27 +36,6 @@
     </div>
     {% endfor %}
 </div>
-<!-- <table class="table mb-0">
-    <thead>
-        <tr>
-            <th>Image</th>
-            <th>Download</th>
-            <th>File size</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for image in images %}
-        <tr>
-            <td><a target="_blank" href="{{ image.image.url }}">
-                    <img src="{{ image.image.url }}" alt="Forest" style="width:150px">
-                </a></td>
-            <td><a class="btn btn-primary btn-sm" href="{{ image.image.url }}" download>Download</a></td>
-            <td>{{ image.image.size|filesizeformat  }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table> -->
-
 
 {% endif %}
 {% endblock %}
