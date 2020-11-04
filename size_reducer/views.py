@@ -12,6 +12,8 @@ from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import sys
 import os
+import PIL
+from PIL import ExifTags
 
 # Create your views here.
 
@@ -22,7 +24,20 @@ def home(request):
 
 def compressImage(image, quality):
     imageTemproary = Image.open(image)
-    imageTemproary = imageTemproary.convert('RGB')
+    if hasattr(imageTemproary, '_getexif'):
+        for orientation in ExifTags.TAGS.keys():
+            if ExifTags.TAGS[orientation] == 'Orientation':
+                break
+        exif = dict(imageTemproary._getexif().items())
+
+        if exif[orientation] == 3:
+            imageTemproary = imageTemproary.rotate(180, expand=True)
+        elif exif[orientation] == 6:
+            imageTemproary = imageTemproary.rotate(270, expand=True)
+        elif exif[orientation] == 8:
+            imageTemproary = imageTemproary.rotate(90, expand=True)
+    else:
+        imageTemproary = imageTemproary.convert('RGB')
     outputIoStream = BytesIO()
     imageTemproary.save(outputIoStream, format='JPEG', quality=quality)
     outputIoStream.seek(0)
