@@ -24,28 +24,39 @@ def home(request):
 
 def compressImage(image, quality):
     imageTemproary = Image.open(image)
-    if hasattr(imageTemproary, '_getexif'):
-        for orientation in ExifTags.TAGS.keys():
-            if ExifTags.TAGS[orientation] == 'Orientation':
-                break
-        e = imageTemproary._getexif()
-        if e is not None:
-            exif = dict(imageTemproary._getexif().items())
+    try:
+        if hasattr(imageTemproary, '_getexif'):
+            for orientation in ExifTags.TAGS.keys():
+                if ExifTags.TAGS[orientation] == 'Orientation':
+                    break
+            e = imageTemproary._getexif()
+            if e is not None:
+                exif = dict(imageTemproary._getexif().items())
 
-            if exif[orientation] == 3:
-                imageTemproary = imageTemproary.rotate(180, expand=True)
-            elif exif[orientation] == 6:
-                imageTemproary = imageTemproary.rotate(270, expand=True)
-            elif exif[orientation] == 8:
-                imageTemproary = imageTemproary.rotate(90, expand=True)
-    else:
+                if exif[orientation] == 3:
+                    imageTemproary = imageTemproary.rotate(180, expand=True)
+                elif exif[orientation] == 6:
+                    imageTemproary = imageTemproary.rotate(270, expand=True)
+                elif exif[orientation] == 8:
+                    imageTemproary = imageTemproary.rotate(90, expand=True)
+
+    except:
+        print('except')
         imageTemproary = imageTemproary.convert('RGB')
-    outputIoStream = BytesIO()
-    imageTemproary.save(outputIoStream, format='JPEG', quality=quality)
-    outputIoStream.seek(0)
-    image = InMemoryUploadedFile(outputIoStream, 'ImageField', "%s.jpg" % image.name.split(
-        '.')[0], 'image/jpeg', sys.getsizeof(outputIoStream), None)
-    return image
+        outputIoStream = BytesIO()
+        imageTemproary.save(outputIoStream, format='JPEG', quality=quality)
+        outputIoStream.seek(0)
+        image = InMemoryUploadedFile(outputIoStream, 'ImageField', "%s.jpg" % image.name.split(
+            '.')[0], 'image/jpeg', sys.getsizeof(outputIoStream), None)
+        return image
+    else:
+        print('else')
+        outputIoStream = BytesIO()
+        imageTemproary.save(outputIoStream, format='JPEG', quality=quality)
+        outputIoStream.seek(0)
+        image = InMemoryUploadedFile(outputIoStream, 'ImageField', "%s.jpg" % image.name.split(
+            '.')[0], 'image/jpeg', sys.getsizeof(outputIoStream), None)
+        return image
 
 
 class MainView(View):
