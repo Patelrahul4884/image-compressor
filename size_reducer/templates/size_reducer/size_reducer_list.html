@@ -10,7 +10,7 @@
 
         <input class="inputfile" id='file' onchange="form.submit() " type="file" name="myimage" accept="image/*"
             required>
-        <label for="file"> <i class="fa fa-image"> Choose a Image</i> </label>
+        <label class="btn btn-dark" for="file"> <i class="fa fa-image"> Choose a Image</i> </label>
     </div>
     <input type="hidden" id="myField" value="" name="tabID" />
 </form>
@@ -19,23 +19,43 @@
 </div>
 
 {% if images %}
-<h3>Your compressed Images</h3>
+<h3 style="color:#fff ; text-align: center; background-color: #343A40;">Your compressed Images</h3>
 
 <div class="row">
     {% for image in images %}
     <div class="column mx-auto">
-        <div class="card" style="height: 200px;">
-            <a target="_blank" href="{{ image.image.url }}">
-                <img src="{{ image.image.url }}" alt="photo.." height="125" width="150">
-            </a>
+        <div class="card mb-3" style="height: 200px;">
+            <!-- <a target="_blank" href="{{ image.image.url }}">
+                <img id="myImg" src="{{ image.image.url }}" alt="photo.." height="125" width="150">
+            </a> -->
+
+            <img onclick='openModal();currentSlide("{{ forloop.counter }}")' src="{{ image.image.url }}"
+                alt="{{ image.image.name }}" height="125" width="150">
+
+
             <div class="card-body">
-                <a class="btn btn-primary btn-sm" href="{{ image.image.url }}" download>Download</a>
+                <a class="btn btn-dark btn-sm" href="{{ image.image.url }}" download>Download</a>
                 <p>{{ image.image.size|filesizeformat  }}</p>
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
+<div id="myModal" class="modal">
+    <span class="close cursor" onclick="closeModal()">&times;</span>
+    <div class="modal-content">
+        {% for image in images %}
 
+        <div class="mySlides">
+            <div class="numbertext">{{ forloop.counter }} / 10</div>
+            <img id="myimage" src="{{ image.image.url }}" style="width:100%">
+        </div>
+
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+
+        {% endfor %}
+    </div>
+</div>
 {% endif %}
 {% endblock %}

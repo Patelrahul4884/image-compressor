@@ -14,6 +14,7 @@ import sys
 import os
 import PIL
 from PIL import ExifTags
+from django.contrib import messages
 
 # Create your views here.
 
@@ -41,7 +42,6 @@ def compressImage(image, quality):
                     imageTemproary = imageTemproary.rotate(90, expand=True)
 
     except:
-        print('except')
         imageTemproary = imageTemproary.convert('RGB')
         outputIoStream = BytesIO()
         imageTemproary.save(outputIoStream, format='JPEG', quality=quality)
@@ -79,7 +79,15 @@ class MainView(View):
         token = Token(token=token)
         token.save()
 
-        if image_size > 100 and image_size < 400:
+        if image_size < 5:
+            messages.warning(request, 'Please Upload 5kb or higher size photo')
+            return redirect('size_reducer:all')
+
+        if image_size >= 5 and image_size < 50:
+            quality = 2
+        elif image_size > 50 and image_size < 100:
+            quality = 4
+        elif image_size > 100 and image_size < 400:
             quality = 5
         elif image_size > 400 and image_size < 700:
             quality = 6
